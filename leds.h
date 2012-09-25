@@ -1,0 +1,8 @@
+#define LED6_ON         GPIOSetValue(1, 18, 1)
+#define LED6_OFF        GPIOSetValue(1, 18, 0)
+#define LED7_ON         GPIOSetValue(1, 19, 1)
+#define LED7_OFF        GPIOSetValue(1, 19, 0)
+#define LED8_ON         GPIOSetValue(1, 24, 1)
+#define LED8_OFF        GPIOSetValue(1, 24, 0)
+#define LED9_ON         GPIOSetValue(1, 25, 1)
+#define LED9_OFF        GPIOSetValue(1, 25, 0)
