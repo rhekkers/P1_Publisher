@@ -15,7 +15,7 @@
 #define MQTT_CLIENTID "smartmeter"
 
 typedef enum {
-	RESERVED = 0,
+  RESERVED = 0,
   MQTT_CONNECT,
   MQTT_CONNACK,
   MQTT_PUBLISH,
@@ -34,7 +34,7 @@ typedef enum {
 
 struct mqtt_pubmessage
 {
-	uint8_t len;
+  uint8_t len;
   char msg[MQTT_MAX_PACKET_SIZE];
 };
 

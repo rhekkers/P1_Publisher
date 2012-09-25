@@ -4,9 +4,9 @@
 
 #define P1_LINELEN 80
 typedef struct {
-	uint8_t exclmarkfound;
-	uint8_t linecount;
-	uint8_t len;
+  uint8_t exclmarkfound;
+  uint8_t linecount;
+  uint8_t len;
   char line[P1_LINELEN];
 } p1_state;
 
@@ -14,7 +14,7 @@ p1_state p1data;
 
 typedef enum { ID, STD, LINE17, LINE18, EXCLMARK } MatchType;
 typedef struct {
-	MatchType type;
+  MatchType type;
   char* key;
   char* topic;
   int start;
@@ -38,50 +38,50 @@ Match matchlist[] = {
 //---------------------------------------------------------------------------
 void send(char *str1, char *str2)
 {
-	mqtt_publish(str1, str2, strlen(str2), 1 /* (retain) */);
+  mqtt_publish(str1, str2, strlen(str2), 1 /* (retain) */);
 }
 //---------------------------------------------------------------------------
 void matchline()
 {
-	uint8_t i;
-	uint8_t found=0;
-	Match t;
-	char value[13]="";
+  uint8_t i;
+  uint8_t found=0;
+  Match t;
+  char value[13]="";
 
-	for(i=0;(i<sizeof(matchlist)/sizeof(Match))&(!found);i++){
-		t = matchlist[i];
-//		uint8_t keymatch = (strncmp(t.key, p1data.line, strlen(t.key)) == 0);
-//		if(keymatch){
-			switch(t.type){
-			case ID: if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
-				p1data.linecount=1;
-				break;
-			}
-			case STD: if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
-				found=1;
-				break;
-			}
-			case LINE17:if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
-				p1data.linecount = 17;
-				found=1;
-				break;
-			}
-			case LINE18:if((p1data.linecount == 18)&&(strncmp(t.key, p1data.line, strlen(t.key)) == 0)){
-				found=1;
-				break;
-			}
-			case EXCLMARK:if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
-				p1data.exclmarkfound=1;
-				break;
-			}
-			} //switch
+  for(i=0;(i<sizeof(matchlist)/sizeof(Match))&(!found);i++){
+    t = matchlist[i];
+//    uint8_t keymatch = (strncmp(t.key, p1data.line, strlen(t.key)) == 0);
+//    if(keymatch){
+      switch(t.type){
+      case ID: if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
+        p1data.linecount=1;
+        break;
+      }
+      case STD: if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
+        found=1;
+        break;
+      }
+      case LINE17:if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
+        p1data.linecount = 17;
+        found=1;
+        break;
+      }
+      case LINE18:if((p1data.linecount == 18)&&(strncmp(t.key, p1data.line, strlen(t.key)) == 0)){
+        found=1;
+        break;
+      }
+      case EXCLMARK:if(strncmp(t.key, p1data.line, strlen(t.key)) == 0){
+        p1data.exclmarkfound=1;
+        break;
+      }
+      } //switch
 
-			if((found)&&(p1data.exclmarkfound)){
-				strncpy(value, p1data.line+t.start, t.width);
-				send(t.topic, value);
-			//}
-	}
-	}
+      if((found)&&(p1data.exclmarkfound)){
+        strncpy(value, p1data.line+t.start, t.width);
+        send(t.topic, value);
+      //}
+  }
+  }
 }
 //---------------------------------------------------------------------------
 // character received will be stored in linebuffer, which will be
