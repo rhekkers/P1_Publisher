@@ -129,7 +129,7 @@
 #define UIP_ETHADDR0    0x00  /**< The first octet of the Ethernet
 				 address if UIP_FIXEDETHADDR is
 				 1. \hideinitializer */
-#define UIP_ETHADDR1    0xFF  /**< The second octet of the Ethernet
+#define UIP_ETHADDR1    0x0F  /**< The second octet of the Ethernet
 				 address if UIP_FIXEDETHADDR is
 				 1. \hideinitializer */
 #define UIP_ETHADDR2    0xFF  /**< The third octet of the Ethernet
@@ -141,7 +141,7 @@
 #define UIP_ETHADDR4    0xFF  /**< The fifth octet of the Ethernet
 				 address if UIP_FIXEDETHADDR is
 				 1. \hideinitializer */
-#define UIP_ETHADDR5    0xFF  /**< The sixth octet of the Ethernet
+#define UIP_ETHADDR5    0x05  /**< The sixth octet of the Ethernet
 				 address if UIP_FIXEDETHADDR is
 				 1. \hideinitializer */
 

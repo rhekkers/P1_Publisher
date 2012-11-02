@@ -53,11 +53,31 @@ volatile uint32_t timer3_capture1 = 0;
 *****************************************************************************/
 void delayMs(uint8_t timer_num, uint32_t delayInMs)
 {
+	uint8_t pclk;
+	uint32_t pclkdiv = (LPC_SC->PCLKSEL1 >> 14) & 0x03;
+
+	switch ( pclkdiv )
+	{
+	  case 0x00:
+	  default:
+		pclk = 4;
+		break;
+	  case 0x01:
+		pclk = 1;
+		break;
+	  case 0x02:
+		pclk = 2;
+		break;
+	  case 0x03:
+		pclk = 8;
+		break;
+	}
+
   if ( timer_num == 0 )
   {
 	LPC_TIM0->TCR = 0x02;		/* reset timer */
-	LPC_TIM0->PR  = 0x00;		/* set prescaler to zero */
-	LPC_TIM0->MR0 = (SystemCoreClock / 4) / (1000/delayInMs);  //enter delay time
+	LPC_TIM0->PR  = (SystemCoreClock / (pclk * 1000));
+	LPC_TIM0->MR0 = delayInMs;  //enter delay time
 	LPC_TIM0->IR  = 0xff;		/* reset all interrrupts */
 	LPC_TIM0->MCR = 0x04;		/* stop timer on match */
 	LPC_TIM0->TCR = 0x01;		/* start timer */
@@ -69,8 +89,8 @@ void delayMs(uint8_t timer_num, uint32_t delayInMs)
   else if ( timer_num == 1 )
   {
 	LPC_TIM1->TCR = 0x02;		/* reset timer */
-	LPC_TIM1->PR  = 0x00;		/* set prescaler to zero */
-	LPC_TIM0->MR0 = (SystemCoreClock / 4) / (1000/delayInMs);  //enter delay time
+	LPC_TIM1->PR  = (SystemCoreClock / (pclk * 1000));
+	LPC_TIM1->MR0 = delayInMs;  //enter delay time
 	LPC_TIM1->IR  = 0xff;		/* reset all interrrupts */
 	LPC_TIM1->MCR = 0x04;		/* stop timer on match */
 	LPC_TIM1->TCR = 0x01;		/* start timer */
@@ -82,8 +102,8 @@ void delayMs(uint8_t timer_num, uint32_t delayInMs)
   else if ( timer_num == 2 )
     {
   	LPC_TIM2->TCR = 0x02;		/* reset timer */
-  	LPC_TIM2->PR  = 0x00;		/* set prescaler to zero */
-	LPC_TIM0->MR0 = (SystemCoreClock / 4) / (1000/delayInMs);  //enter delay time
+  	LPC_TIM2->PR  = (SystemCoreClock / (pclk * 1000));
+	LPC_TIM2->MR0 = delayInMs;  //enter delay time
   	LPC_TIM2->IR  = 0xff;		/* reset all interrrupts */
   	LPC_TIM2->MCR = 0x04;		/* stop timer on match */
   	LPC_TIM2->TCR = 0x01;		/* start timer */
@@ -95,8 +115,8 @@ void delayMs(uint8_t timer_num, uint32_t delayInMs)
   else if ( timer_num == 3 )
     {
   	LPC_TIM3->TCR = 0x02;		/* reset timer */
-  	LPC_TIM3->PR  = 0x00;		/* set prescaler to zero */
-	LPC_TIM0->MR0 = (SystemCoreClock / 4) / (1000/delayInMs);  //enter delay time
+  	LPC_TIM3->PR  = (SystemCoreClock / (pclk * 1000));
+	LPC_TIM3->MR0 = delayInMs;  //enter delay time
   	LPC_TIM3->IR  = 0xff;		/* reset all interrrupts */
   	LPC_TIM3->MCR = 0x04;		/* stop timer on match */
   	LPC_TIM3->TCR = 0x01;		/* start timer */
@@ -106,6 +126,94 @@ void delayMs(uint8_t timer_num, uint32_t delayInMs)
     }
   return;
 }
+
+/*****************************************************************************
+** Function name:		delayUs
+**
+** Descriptions:		Start the timer delay in micro seconds
+**						until elapsed
+**
+** parameters:			timer number, Delay value in micro second
+**
+** Returned value:		None
+**
+*****************************************************************************/
+void delayUs(uint8_t timer_num, uint32_t delayInUs)
+{
+	uint8_t pclk;
+	uint32_t pclkdiv = (LPC_SC->PCLKSEL1 >> 14) & 0x03;
+
+	switch ( pclkdiv )
+	{
+	  case 0x00:
+	  default:
+		pclk = 4;
+		break;
+	  case 0x01:
+		pclk = 1;
+		break;
+	  case 0x02:
+		pclk = 2;
+		break;
+	  case 0x03:
+		pclk = 8;
+		break;
+	}
+
+  if ( timer_num == 0 )
+  {
+	LPC_TIM0->TCR = 0x02;		/* reset timer */
+	LPC_TIM0->PR  = (SystemCoreClock / (pclk * 1000000));
+	LPC_TIM0->MR0 = delayInUs;  //enter delay time
+	LPC_TIM0->IR  = 0xff;		/* reset all interrrupts */
+	LPC_TIM0->MCR = 0x04;		/* stop timer on match */
+	LPC_TIM0->TCR = 0x01;		/* start timer */
+
+	/* wait until delay time has elapsed */
+	while (LPC_TIM0->TCR & 0x01);
+
+  }
+  else if ( timer_num == 1 )
+  {
+	LPC_TIM1->TCR = 0x02;		/* reset timer */
+	LPC_TIM1->PR  = (SystemCoreClock / (pclk * 1000000));
+	LPC_TIM1->MR0 = delayInUs;  //enter delay time
+	LPC_TIM1->IR  = 0xff;		/* reset all interrrupts */
+	LPC_TIM1->MCR = 0x04;		/* stop timer on match */
+	LPC_TIM1->TCR = 0x01;		/* start timer */
+
+	/* wait until delay time has elapsed */
+	while (LPC_TIM1->TCR & 0x01);
+  }
+
+  else if ( timer_num == 2 )
+    {
+  	LPC_TIM2->TCR = 0x02;		/* reset timer */
+  	LPC_TIM2->PR  = (SystemCoreClock / (pclk * 1000000));
+	LPC_TIM2->MR0 = delayInUs;  //enter delay time
+  	LPC_TIM2->IR  = 0xff;		/* reset all interrrupts */
+  	LPC_TIM2->MCR = 0x04;		/* stop timer on match */
+  	LPC_TIM2->TCR = 0x01;		/* start timer */
+
+  	/* wait until delay time has elapsed */
+  	while (LPC_TIM2->TCR & 0x01);
+    }
+
+  else if ( timer_num == 3 )
+    {
+  	LPC_TIM3->TCR = 0x02;		/* reset timer */
+  	LPC_TIM3->PR  = (SystemCoreClock / (pclk * 1000000));
+	LPC_TIM3->MR0 = delayInUs;  //enter delay time
+  	LPC_TIM3->IR  = 0xff;		/* reset all interrrupts */
+  	LPC_TIM3->MCR = 0x04;		/* stop timer on match */
+  	LPC_TIM3->TCR = 0x01;		/* start timer */
+
+  	/* wait until delay time has elapsed */
+  	while (LPC_TIM3->TCR & 0x01);
+    }
+  return;
+}
+
 
 /******************************************************************************
 ** Function name:		Timer0_IRQHandler
@@ -368,7 +476,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
 #if TIMER_MATCH
 	LPC_PINCON->PINSEL3 &= ~((0x3<<24)|(0x3<<26));
 	LPC_PINCON->PINSEL3 |= ((0x3<<24)|(0x3<<26));
-#else
+#endif
+
+#if TIMER_CAPTURE
 	LPC_PINCON->PINSEL3 &= ~((0x3<<20)|(0x3<<22));
 	LPC_PINCON->PINSEL3 |= ((0x3<<20)|(0x3<<22));
 #endif
@@ -401,10 +511,12 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
 #if TIMER_MATCH
 	LPC_TIM0->EMR &= ~(0xFF<<4);
 	LPC_TIM0->EMR |= ((0x3<<4)|(0x3<<6));
-#else
+    #endif
+
+#if TIMER_CAPTURE
 	/* Capture 0 and 1 on rising edge, interrupt enable. */
 	LPC_TIM0->CCR = (0x1<<0)|(0x1<<2)|(0x1<<3)|(0x1<<5);
-#endif
+    #endif
 	LPC_TIM0->MCR = (0x3<<0)|(0x3<<3);	/* Interrupt and Reset on MR0 and MR1 */
 	NVIC_EnableIRQ(TIMER0_IRQn);
 	return (TRUE);
@@ -419,7 +531,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
 #if TIMER_MATCH
 	LPC_PINCON->PINSEL3 &= ~((0x3<<12)|(0x3<<18));
 	LPC_PINCON->PINSEL3 |= ((0x3<<12)|(0x3<<18));
-#else
+    #endif
+
+#if TIMER_CAPTURE
 	LPC_PINCON->PINSEL3 &= ~((0x3<<4)|(0x3<<6));
 	LPC_PINCON->PINSEL3 |= ((0x3<<4)|(0x3<<6));
 #endif
@@ -450,7 +564,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
 #if TIMER_MATCH
 	LPC_TIM1->EMR &= ~(0xFF<<4);
 	LPC_TIM1->EMR |= ((0x3<<4)|(0x3<<6));
-#else
+    #endif
+
+#if TIMER_CAPTURE
 	/* Capture 0/1 on rising edge, interrupt enable. */
 	LPC_TIM1->CCR = (0x1<<0)|(0x1<<2)|(0x1<<3)|(0x1<<5);
 #endif
@@ -469,7 +585,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
   #if TIMER_MATCH
   	LPC_PINCON->PINSEL3 &= ~((0x3<<12)|(0x3<<18));
   	LPC_PINCON->PINSEL3 |= ((0x3<<12)|(0x3<<18));
-  #else
+  #endif
+
+  #if TIMER_CAPTURE
   	LPC_PINCON->PINSEL3 &= ~((0x3<<4)|(0x3<<6));
   	LPC_PINCON->PINSEL3 |= ((0x3<<4)|(0x3<<6));
   #endif
@@ -500,7 +618,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
   #if TIMER_MATCH
   	LPC_TIM2->EMR &= ~(0xFF<<4);
   	LPC_TIM2->EMR |= ((0x3<<4)|(0x3<<6));
-  #else
+  #endif
+
+  #if TIMER_CAPTURE
   	/* Capture 0/1 on rising edge, interrupt enable. */
   	LPC_TIM2->CCR = (0x1<<0)|(0x1<<2)|(0x1<<3)|(0x1<<5);
   #endif
@@ -519,7 +639,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
   #if TIMER_MATCH
   	LPC_PINCON->PINSEL3 &= ~((0x3<<12)|(0x3<<18));
   	LPC_PINCON->PINSEL3 |= ((0x3<<12)|(0x3<<18));
-  #else
+  #endif
+
+  #if TIMER_CAPTURE
   	LPC_PINCON->PINSEL3 &= ~((0x3<<4)|(0x3<<6));
   	LPC_PINCON->PINSEL3 |= ((0x3<<4)|(0x3<<6));
   #endif
@@ -550,7 +672,9 @@ uint32_t TimerInit( uint8_t timer_num, uint32_t TimerInterval )
   #if TIMER_MATCH
   	LPC_TIM3->EMR &= ~(0xFF<<4);
   	LPC_TIM3->EMR |= ((0x3<<4)|(0x3<<6));
-  #else
+  #endif
+
+  #if TIMER_CAPTURE
   	/* Capture 0/1 on rising edge, interrupt enable. */
   	LPC_TIM3->CCR = (0x1<<0)|(0x1<<2)|(0x1<<3)|(0x1<<5);
   #endif

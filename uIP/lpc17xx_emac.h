@@ -14,7 +14,7 @@ BOOL_32 EMAC_SendPacket(void *pPacket, UNS_32 size);
 #define MYMAC_1         0x1E            /* our ethernet (MAC) address        */
 #define MYMAC_2         0x30            /* (MUST be unique in LAN!)          */
 #define MYMAC_3         0x6c
-#define MYMAC_4         0xa2
+//#define MYMAC_4         0xa2
 #define MYMAC_5         0x45
 #define MYMAC_6         0x5e
 

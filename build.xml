@@ -9,20 +9,17 @@
   <dirname file="$${basedir}" property="linkdir"/>
 
   <target depends="compile" name="postbuild">
-    <exec executable="${gcc.home}\arm-none-eabi-objcopy.exe">
-      <arg value="-O"/>
-      <arg value="binary"/>
-      <arg value="${project.bin}\${project.name}.elf"/>
-      <arg value="${project.bin}\${project.name}.bin"/>
+    <exec executable="cmd">
+      <arg line="/C &quot;${gcc.home}/arm-none-eabi-objdump&quot; -d &quot;${project.bin}/${project.name}.elf&quot; &gt; &quot;${project.bin}/${project.name}.txt&quot;"/>
     </exec>
-    <exec executable="${gcc.home}\arm-none-eabi-objcopy.exe">
-      <arg value="-O"/>
-      <arg value="ihex"/>
-      <arg value="${project.bin}\${project.name}.elf"/>
-      <arg value="${project.bin}\${project.name}.hex"/>
+    <exec executable="cmd">
+      <arg line="/C &quot;${gcc.home}/arm-none-eabi-objcopy&quot; -O binary &quot;${project.bin}/${project.name}.elf&quot; &quot;${project.bin}/${project.name}.bin&quot;"/>
     </exec>
-    <exec dir="${basedir}\${project.bin}" executable="${gcc.home}\arm-none-eabi-size.exe">
-      <arg value="${project.name}.elf"/>
+    <exec executable="cmd">
+      <arg line="/C &quot;${gcc.home}/arm-none-eabi-objcopy&quot; -O ihex &quot;${project.bin}/${project.name}.elf&quot; &quot;${project.bin}/${project.name}.hex&quot;"/>
+    </exec>
+    <exec dir="${basedir}/${project.bin}" executable="cmd">
+      <arg line="/C &quot;${gcc.home}/arm-none-eabi-size&quot; &quot;${project.name}.elf&quot;"/>
     </exec>
   </target>
   
@@ -33,10 +30,11 @@
     <cc debug="true" objdir="${project.obj}" outfile="${project.bin}/${project.name}.elf" outtype="executable" subsystem="console">
       <!-- compile all the c source file in the project -->
       
-      <fileset dir=".">
+      <fileset casesensitive="false" dir=".">
         <include name="**/*.c"/>
         <include name="**/*.cpp"/>
         <include name="**/*.s"/>
+        <exclude name="leds.h"/>
       </fileset>
       <project outfile="${project.name}.elf" overwrite="true" type="xcode"/>
       

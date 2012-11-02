@@ -86,10 +86,11 @@ void mqtt_init(void)
   GPIOSetDir(1, 19, OUTPUT);
   GPIOSetDir(1, 24, OUTPUT);
   GPIOSetDir(1, 25, OUTPUT);
+  GPIOSetDir(0, 26, OUTPUT);
 
-  LED6_OFF;
-  LED7_OFF;
-  LED8_OFF;
+  UARTLED_OFF;
+  APPLED_OFF;
+  CONNLED_OFF;
   LED9_OFF;
 
   memb_init(&publbuf);
@@ -198,31 +199,27 @@ uint8_t write(uint8_t fh, uint8_t* vh, uint16_t length)
 //---------------------------------------------------------------------------
 void mqtt_appcall(void)
 {
-  LED6_ON;
+  APPLED_ON;
   delayMs(0,1);
-  LED6_OFF;
+  APPLED_OFF;
 
   static unsigned int i;
 
   if(uip_connected())
   {
+  	CONNLED_ON;
+  	s.connstate = STATE_CONNECTED;
     timer_set(&ping_timer, CLOCK_SECOND * (MQTT_KEEPALIVE / 3));  /* 10s */
-
-    LED8_ON;
-
     for(i = 0; i < MQTT_NUMLINES; ++i) s.msgs[i] = NULL;
-    s.connstate = STATE_CONNECTED;
-
     mqtt_connect(MQTT_CLIENTID, "", "", "lwt", 0, 0, MQTT_CLIENTID" died");
   }
 
   if(uip_closed() || uip_aborted() || uip_timedout())
   {
+  	CONNLED_OFF;
     s.connstate = STATE_DISCONNECTED;
-
     cleanup();
     uip_close();
-    LED8_OFF;
     return;
   }
 
@@ -250,19 +247,19 @@ void mqtt_appcall(void)
   }
 }
 //---------------------------------------------------------------------------
-void mqtt_checkconn(void)
-{
-  // TODO: also check on last uip rx > keepalive+x
-  if(s.connstate != STATE_CONNECTED)
-  {
-    LED8_ON;
-    delayMs(0,5);
-    LED8_OFF;
-
-    // start all over.
-    mqtt_init();
-  }
-}
+//void mqtt_checkconn(void)
+//{
+//  // TODO: also check on last uip rx > keepalive+x
+//  if(s.connstate != STATE_CONNECTED)
+//  {
+//    LED8_ON;
+//    delayMs(0,5);
+//    LED8_OFF;
+//
+//    // start all over.
+//    mqtt_init();
+//  }
+//}
 //------------------------------------------------------------------------------
 uint8_t fixedheader(mqtt_msg_t type, uint8_t dup, uint8_t qos, uint8_t retain)
 {
@@ -335,7 +332,7 @@ void mqtt_publish(char *topic, char *payload, size_t pllen, uint8_t retained)
        rllen++;
     } while(len>0);
 
-    p = addChar(p, fixedheader(MQTT_PUBLISH,0,0,0));
+    p = addChar(p, fixedheader(MQTT_PUBLISH,0,0,retained));
     for(i=0;i<rllen;i++) p = addChar(p, rl[i]);
     p = addUTF8(p, topic);
     p = addStr(p, payload);

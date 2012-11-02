@@ -23,7 +23,9 @@
 /* The test is either MAT_OUT or CAP_IN. Default is MAT_OUT. */
 /* If running DMA test, External match is not needed to trigger DMA, but still 
 set timer as MATx instead of CAPx. */
-#define TIMER_MATCH		1
+#define TIMER_MATCH		0
+
+#define TIMER_CAPTURE	0
 	
 /* TIME_INTERVALmS is a value to load the timer match register with
    to get a 1 mS delay */
@@ -32,6 +34,7 @@ set timer as MATx instead of CAPx. */
 #define TIME_INTERVAL	(9000000/100 - 1)
 
 extern void delayMs(uint8_t timer_num, uint32_t delayInMs);
+extern void delayUs(uint8_t timer_num, uint32_t delayInUs);
 extern uint32_t TimerInit( uint8_t timer_num, uint32_t timerInterval );
 extern void enable_timer( uint8_t timer_num );
 extern void disable_timer( uint8_t timer_num );

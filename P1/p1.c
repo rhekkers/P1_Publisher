@@ -22,15 +22,15 @@ typedef struct {
 } Match;
 
 Match matchlist[] = {
-  {ID, "/ISk5\\", "", 0, 0},
-  {STD, "1-0:1.8.1", TPF"/powerusage1", 10, 9},
-  {STD, "1-0:1.8.2", TPF"/powerusage2", 10, 9},
-  {STD, "1-0:2.8.1", TPF"/powerdeliv1", 10, 9},
-  {STD, "1-0:2.8.2", TPF"/powerdeliv2", 10, 9},
-  {STD, "0-0:96.14.0", TPF"/tariff", 12, 4},
-  {STD, "1-0:1.7.0", TPF"/powerusagec", 10, 7},
-  {STD, "1-0:2.7.0", TPF"/powerdelivc", 10, 7},
-  {LINE17, "1-0:2.7.0", TPF"/gastimestamp", 11, 12},
+  {ID, P1_SMID, "", 0, 0},
+  {STD, P1PU1, TPF"/powerusage1", 10, 9},
+  {STD, P1PU2, TPF"/powerusage2", 10, 9},
+  {STD, P1PD1, TPF"/powerdeliv1", 10, 9},
+  {STD, P1PD2, TPF"/powerdeliv2", 10, 9},
+  {STD, P1TIP, TPF"/tariff", 12, 4},
+  {STD, P1PUC, TPF"/powerusagec", 10, 7},
+  {STD, P1PDC, TPF"/powerdelivc", 10, 7},
+  {LINE17, P1GTS, TPF"/gastimestamp", 11, 12},
   {LINE18, "(", TPF"/gasusage", 1, 9},
   {EXCLMARK,"!","", 0, 0}
 };

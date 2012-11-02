@@ -6,13 +6,13 @@
 #include "uip_arp.h"
 #include "tapdev.h"
 #include "timer.h"
-//#include "p1.h"
+#include "leds.h"
 #include "mqtt.h"
 
 	unsigned int i;
 	uip_ipaddr_t ipaddr;	/* local IP address */
 	//uip_ipaddr_t ipaddrs;	/* local IP address */
-	struct timer periodic_timer, arp_timer;
+	struct timer periodic_timer, arp_timer, alwaysconn_timer;
 	char ipstring [20];
 
 void EthernetInit (void)
@@ -27,6 +27,7 @@ void EthernetInit (void)
 	// two timers for tcp/ip
 	timer_set(&periodic_timer, CLOCK_SECOND/8 ); /* 0.25s */
 	timer_set(&arp_timer, CLOCK_SECOND * 10);	/* 10s */
+	timer_set(&alwaysconn_timer, CLOCK_SECOND * 15);	/* 15s */
 
 	// ethernet init
 	tapdev_init();
@@ -99,5 +100,15 @@ void EthernetHandle (void)
 			timer_reset(&arp_timer);
 			uip_arp_timer();
 		}
+	}
+	else if(timer_expired(&alwaysconn_timer))
+	{
+  	timer_reset(&alwaysconn_timer);
+
+  	if(!uip_conn_active(0))
+  	{
+  		CONNLED_OFF;
+  		mqtt_init();
+  	}
 	}
 }
