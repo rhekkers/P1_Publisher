@@ -559,7 +559,7 @@ void SystemInit (void)
 #if (__RAM_MODE__==1)
   SCB->VTOR  = 0x10000000 & 0x3FFFFF80;
 #else
-  SCB->VTOR  = 0x00000000 & 0x3FFFFF80;
+  SCB->VTOR  = 0x00010000 & 0x3FFFFF80;		// set for use with TFTP boot loader !!
 #endif
 }
 

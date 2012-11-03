@@ -2,6 +2,6 @@
 <UserRuns>
   <Run isBefore="1" isSelected="0" value=""/>
   <Run isBefore="1" isSelected="0" value=""/>
-  <Run isBefore="0" isSelected="0" value=""/>
+  <Run isBefore="0" isSelected="1" value="&quot;after1.bat&quot; &quot;P1_Publisher&quot; &quot;p1publisher&quot;"/>
   <Run isBefore="0" isSelected="0" value=""/>
 </UserRuns>

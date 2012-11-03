@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project default="postbuild" name="test">
+<project default="afterbuild" name="test">
   <property name="project.name" value="P1_Publisher"/>
   <property name="project.debug" value="Debug"/>
   <property name="project.obj" value="Debug/obj"/>
@@ -20,6 +20,12 @@
     </exec>
     <exec dir="${basedir}/${project.bin}" executable="cmd">
       <arg line="/C &quot;${gcc.home}/arm-none-eabi-size&quot; &quot;${project.name}.elf&quot;"/>
+    </exec>
+  </target>
+  
+  <target depends="postbuild" name="afterbuild">
+    <exec executable="cmd">
+      <arg line="/C &quot;after1.bat&quot; &quot;P1_Publisher&quot; &quot;p1publisher&quot;"/>
     </exec>
   </target>
   
@@ -82,7 +88,7 @@
   </target>
   
   <target depends="clean" name="rebuild">
-    <antcall target="postbuild"/>
+    <antcall target="afterbuild"/>
   </target>
 
 </project>
